@@ -1,10 +1,25 @@
 <resources>
-    <string name="app_name">QRMessager</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">QR信使</string>
+    <string name="nav_header_title">QR信使</string>
+    <string name="nav_header_subtitle">无需蓝牙连接或机型匹配的文件二维码传输助手</string>
+    <!--    <string name="nav_header_desc">Navigation header</string>-->
+    <string name="action_settings">设置</string>
+    <string name="way_to_go_title">后期规划:</string>
+    <string name="way_to_go_content1">
+        1.对数据进行压缩后进行传输以改善传输速率
+    </string>
+    <string name="way_to_go_content2">
+        2.探索更多的更高效的传输方式，减少传输冗余\n
+        3.适配安卓10的文件IO
+    </string>
+    <string name="menu_receiver">扫码接收</string>
+    <string name="menu_sender">文件生成</string>
+    <string name="menu_more">敬请期待</string>
+    <string name="btn_choose_file">选择文件</string>
+    <string name="text_choose_file_tip">tips:建议不超过2MB</string>
+    <string name="btn_confirm_trans">开始转换</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="btn_back">返回</string>
 
 </resources>

@@ -5,16 +5,16 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="扫码接收" />
+            android:id="@+id/nav_receiver"
+            android:icon="@drawable/ic_scan"
+            android:title="@string/menu_receiver" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="文件生成" />
+            android:id="@+id/nav_sender"
+            android:icon="@drawable/ic_file"
+            android:title="@string/menu_sender" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="敬请期待" />
+            android:id="@+id/nav_more"
+            android:icon="@drawable/ic_menu_more"
+            android:title="@string/menu_more" />
     </group>
 </menu>

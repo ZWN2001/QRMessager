@@ -8,11 +8,20 @@
         <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.25364583333333335" />
         <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/drawable/ic_menu_slideshow.xml" value="0.13489583333333333" />
         <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/drawable/side_nav_bar.xml" value="0.13489583333333333" />
+        <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/layout/activity_main.xml" value="0.14447463768115942" />
         <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/layout/app_bar_main.xml" value="0.14447463768115942" />
         <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/layout/content_main.xml" value="0.1" />
+        <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/layout/fragment_gallery.xml" value="0.13949275362318841" />
+        <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/layout/fragment_more.xml" value="0.14719202898550723" />
+        <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/layout/fragment_qr.xml" value="0.13949275362318841" />
+        <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/layout/fragment_receiver.xml" value="0.13949275362318841" />
+        <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/layout/fragment_sender.xml" value="0.13949275362318841" />
+        <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/layout/fragment_slideshow.xml" value="0.13269927536231885" />
         <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/layout/nav_header_main.xml" value="0.11875" />
         <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/menu/activity_main_drawer.xml" value="0.2375" />
         <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/menu/main.xml" value="0.2375" />
+        <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.25" />
+        <entry key="..\:/myAndroidProject/QRMessager/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.25" />
       </map>
     </option>
   </component>
