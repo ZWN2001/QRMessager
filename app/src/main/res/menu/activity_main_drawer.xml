@@ -12,9 +12,15 @@
             android:id="@+id/nav_sender"
             android:icon="@drawable/ic_file"
             android:title="@string/menu_sender" />
+
         <item
             android:id="@+id/nav_more"
             android:icon="@drawable/ic_menu_more"
             android:title="@string/menu_more" />
+
+        <item
+        android:id="@+id/nav_about_me"
+        android:icon="@drawable/ic_about_me"
+        android:title="@string/menu_about_me" />
     </group>
 </menu>

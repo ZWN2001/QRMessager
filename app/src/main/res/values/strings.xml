@@ -18,8 +18,15 @@
     <string name="btn_choose_file">选择文件</string>
     <string name="text_choose_file_tip">tips:建议不超过2MB</string>
     <string name="btn_confirm_trans">开始转换</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="btn_back">返回</string>
+    <string name="menu_about_me">关于</string>
+    <string name="text_about_introduce_short">使用二维码在移动端免连接传送文件</string>
+    <string name="text_about_idea_from">缘起：灵感来源于扫家里WiFi二维码进行连接WiFi的时候头脑中的一个小火花.</string>
+    <string name="text_about_target_problem">针对的问题：不同机型的手机之间如何在不进行蓝牙连接且不依赖网络的情况下进行信息与文件传输.</string>
+    <string name="text_about_based_on_title">基于HMS Core：</string>
+    <string name="text_about_based_on_item1">- 统一扫码服务</string>
+    <string name="text_about_based_on_item2">- UI-kit</string>
+    <string name="text_about_github_title">开源地址：</string>
+    <string name="text_about_github_url">https://github.com/ZWN2001/QRMessager/tree/master</string>
 
 </resources>
