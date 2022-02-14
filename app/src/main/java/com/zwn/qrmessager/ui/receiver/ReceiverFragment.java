@@ -14,17 +14,15 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.huawei.hms.hmsscankit.ScanUtil;
-import com.huawei.hms.ml.scan.HmsScan;
-import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions;
 import com.huawei.uikit.hwbutton.widget.HwButton;
 import com.zwn.qrmessager.databinding.FragmentReceiverBinding;
+import com.zwn.qrmessager.ui.CommonActivity;
 
 public class ReceiverFragment extends Fragment {
 
 
     private static final int REQUEST_CODE = 1;
-    private static final int REQUEST_CODE_SCAN_ONE = 0X01;
+    private static final int REQUEST_CODE_SCAN_MULTI = 0X011;
     FragmentReceiverBinding binding;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -40,7 +38,8 @@ public class ReceiverFragment extends Fragment {
                 requireActivity(),
                 new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
                 REQUEST_CODE);
-        ScanUtil.startScan(requireActivity(), REQUEST_CODE_SCAN_ONE, new HmsScanAnalyzerOptions.Creator().create());
+        Intent intent = new Intent(requireActivity(), CommonActivity.class);
+        this.startActivityForResult(intent, REQUEST_CODE_SCAN_MULTI);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -50,11 +49,11 @@ public class ReceiverFragment extends Fragment {
         requireActivity();
         if (resultCode != Activity.RESULT_OK || data == null) { return; }
         //Default View
-        if (requestCode == REQUEST_CODE_SCAN_ONE) {
-            HmsScan obj = data.getParcelableExtra(ScanUtil.RESULT);
-            if (obj != null) {
-                String result = obj.getOriginalValue();
-            }
+        if (requestCode == REQUEST_CODE_SCAN_MULTI) {
+//            HmsScan obj = data.getParcelableExtra(ScanUtil.RESULT);
+//            if (obj != null) {
+//                String result = obj.getOriginalValue();
+//            }
         }
     }
 

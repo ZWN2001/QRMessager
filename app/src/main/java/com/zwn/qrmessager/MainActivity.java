@@ -1,5 +1,6 @@
 package com.zwn.qrmessager;
 
+import android.graphics.Color;
 import android.graphics.Insets;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initScreenWidth();
-
+        getWindow().setStatusBarColor(Color.TRANSPARENT);//将状态栏设置成透明色
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);//将导航栏设置为透明色
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.CommonActivity">
+
+    <FrameLayout
+        android:id="@+id/rim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/viewfinder_text_color">
+
+        <SurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_marginStart="10sp"
+            android:layout_toEndOf="@+id/back_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/text_scan_title"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/back_img"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:src="@drawable/ic_back" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:background="#FF000000"
+            android:alpha="0.1" />
+
+        <TextView
+            android:id="@+id/scan_tip"
+            android:layout_above="@id/scan_ars"
+            android:layout_marginBottom="10dp"
+            android:layout_centerHorizontal="true"
+            android:text="@string/text_scan_tip"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_height="20dp"
+            android:layout_width="220dp"
+            android:gravity="center"/>
+
+        <ImageView
+            android:id="@+id/scan_ars"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/cloors" />
+
+        <com.zwn.qrmessager.util.draw.ScanResultView
+            android:id="@+id/scan_result_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+</FrameLayout>

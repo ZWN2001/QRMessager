@@ -32,5 +32,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_receiver_file_info">info</string>
     <string name="text_receiver_start_scan">开始扫码</string>
+    <string name="text_scan_title">扫码</string>
+    <string name="text_scan_tip">将码放入取景框，即可自动扫描</string>
 
 </resources>

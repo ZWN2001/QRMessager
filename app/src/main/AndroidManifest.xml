@@ -1,23 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.zwn.qrmessager">
-    <!--相机权限-->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!--文件读取权限-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zwn.qrmessager">
+    <!-- 相机权限 -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 文件读取权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <application android:requestLegacyExternalStorage="true" android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:roundIcon="@drawable/ic_launcher" android:supportsRtl="true" android:theme="@style/Theme.QRMessager">
-        <activity android:name=".MainActivity" android:exported="true" android:label="@string/app_name" android:theme="@style/Theme.QRMessager.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <meta-data android:name="com.huawei.hms.client.channel.androidMarket" android:value="false" />
-    </application>
     <queries>
         <intent>
             <action android:name="com.huawei.hms.core.aidlservice" />
         </intent>
     </queries>
-</manifest>
 
+    <application
+        android:statusBarColor="@color/transparent"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@drawable/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.QRMessager">
+        <activity
+            android:name=".ui.CommonActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.QRMessager.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.huawei.hms.client.channel.androidMarket"
+            android:value="false" />
+    </application>
+
+</manifest>
