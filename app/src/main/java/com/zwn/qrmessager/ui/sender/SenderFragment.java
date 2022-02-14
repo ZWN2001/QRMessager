@@ -105,7 +105,7 @@ public class SenderFragment extends Fragment {
             }else {
                 QrFragment qrFragment = new QrFragment(file.getPath());
                 requireActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.app_bar_main, qrFragment).commit();
+                        .replace(R.id.app_bar_main, qrFragment).commit();
             }
         }
     }
