@@ -18,11 +18,16 @@ public class AboutMeFragment extends Fragment {
 //            mParam2 = getArguments().getString(ARG_PARAM2);
 //        }
 //    }
-
+FragmentAboutMeBinding binding;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FragmentAboutMeBinding binding = FragmentAboutMeBinding.inflate(inflater, container, false);
+        binding = FragmentAboutMeBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

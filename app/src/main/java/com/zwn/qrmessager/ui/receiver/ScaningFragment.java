@@ -5,41 +5,45 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+
 import com.huawei.hms.hmsscankit.ScanUtil;
 import com.huawei.hms.ml.scan.HmsScan;
 import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions;
-import com.huawei.uikit.hwbutton.widget.HwButton;
-import com.zwn.qrmessager.databinding.FragmentReceiverBinding;
+import com.zwn.qrmessager.databinding.FragmentScaningBinding;
 
-public class ReceiverFragment extends Fragment {
-
+public class ScaningFragment extends Fragment {
 
     private static final int REQUEST_CODE = 1;
     private static final int REQUEST_CODE_SCAN_ONE = 0X01;
-    FragmentReceiverBinding binding;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentReceiverBinding.inflate(inflater, container, false);
-        HwButton receiverStartButton = binding.receiverStartBtn;
-        receiverStartButton.setOnClickListener(this::requestPermissionAndStart);
+        FragmentScaningBinding binding = FragmentScaningBinding.inflate(inflater, container, false);
+
         return binding.getRoot();
     }
 
-    private void requestPermissionAndStart(View v){
+    private void requestPermission(View v){
         ActivityCompat.requestPermissions(
                 requireActivity(),
                 new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
                 REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         ScanUtil.startScan(requireActivity(), REQUEST_CODE_SCAN_ONE, new HmsScanAnalyzerOptions.Creator().create());
     }
 
@@ -58,9 +62,4 @@ public class ReceiverFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
 }

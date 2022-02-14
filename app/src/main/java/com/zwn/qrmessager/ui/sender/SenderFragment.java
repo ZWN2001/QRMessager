@@ -55,13 +55,12 @@ public class SenderFragment extends Fragment {
     private void getFile(View v){
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_DENIED) {
-            // 判断是否需要显示提示信息
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+//            if (!ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+//                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 ActivityCompat.requestPermissions(requireActivity(),
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         REQUEST_CODE_READ_EXTERNAL_STORAGE);
-            }
+//            }
         } else {
             chooseFile();
         }

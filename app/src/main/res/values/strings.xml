@@ -28,5 +28,9 @@
     <string name="text_about_based_on_item2">- UI-kit</string>
     <string name="text_about_github_title">开源地址：</string>
     <string name="text_about_github_url">https://github.com/ZWN2001/QRMessager/tree/master</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_receiver_file_info">info</string>
+    <string name="text_receiver_start_scan">开始扫码</string>
 
 </resources>

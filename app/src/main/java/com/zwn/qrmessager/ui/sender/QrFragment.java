@@ -32,7 +32,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 
 public class QrFragment extends Fragment {
-
+    FragmentQrBinding binding;
     private final String filePath;
     byte[] data = new byte[512];
     ImageView image;
@@ -47,7 +47,7 @@ public class QrFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         QrViewModel qrViewModel = new ViewModelProvider(this).get(QrViewModel.class);
-        FragmentQrBinding binding = FragmentQrBinding.inflate(inflater, container, false);
+        binding = FragmentQrBinding.inflate(inflater, container, false);
         HwButton backBtn = binding.qrBackBtn;
         image = binding.imageQr;
         backBtn.setOnClickListener(this::backBtnFunction);
@@ -91,7 +91,7 @@ public class QrFragment extends Fragment {
                         Bitmap finalResultImage = bitmap;
                         QrFragment.this.requireActivity().runOnUiThread(() -> image.setImageBitmap(finalResultImage));
                         Thread.sleep(1000);//等1s
-                    } catch (WriterException | IOException | InterruptedException e) {
+                    } catch (WriterException | IOException | InterruptedException | IllegalStateException e) {
                         e.printStackTrace();
                     }
 
@@ -99,7 +99,7 @@ public class QrFragment extends Fragment {
                         inputStream = new FileInputStream(file);
                         while (inputStream.read(data, 0, 512) != -1) {
                             i++;
-                            Bitmap resultImage = ScanUtil.buildBitmap("i" + Arrays.toString(data), 0, width, width, options);
+                            Bitmap resultImage = ScanUtil.buildBitmap("i:" + Arrays.toString(data), 0, width, width, options);
                             QrFragment.this.requireActivity().runOnUiThread(() -> image.setImageBitmap(resultImage));
                             Thread.sleep(1000);//等1s
                         }
@@ -107,12 +107,17 @@ public class QrFragment extends Fragment {
                         Bitmap finalBitmap = bitmap;
                         QrFragment.this.requireActivity().runOnUiThread(() -> image.setImageBitmap(finalBitmap));
                         inputStream.close();
-                    } catch (IOException | WriterException | InterruptedException e) {
+                    } catch (IOException | WriterException | InterruptedException | IllegalStateException e) {
                         e.printStackTrace();
                     }
                 }
             });
             qrThread.start();
         }
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
