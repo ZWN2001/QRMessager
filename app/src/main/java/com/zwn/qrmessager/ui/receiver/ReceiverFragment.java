@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -44,7 +45,7 @@ public class ReceiverFragment extends Fragment {
                 new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
                 REQUEST_CODE);
         Intent intent = new Intent(requireActivity(), CommonActivity.class);
-        this.startActivityForResult(intent, REQUEST_CODE_SCAN_MULTI);
+        startActivityForResult(intent, REQUEST_CODE_SCAN_MULTI);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -56,17 +57,13 @@ public class ReceiverFragment extends Fragment {
         if (requestCode == REQUEST_CODE_SCAN_MULTI) {
             Parcelable[] obj = data.getParcelableArrayExtra(CommonActivity.SCAN_RESULT);
             if (obj != null && obj.length > 0) {
-                if (obj.length == 1) {
-//                    if (obj[0] != null && !TextUtils.isEmpty(((HmsScan) obj[0]).getOriginalValue())) {
-//                        Intent intent = new Intent(this, DisPlayActivity.class);
-//                        intent.putExtra(RESULT, obj[0]);
-//                        startActivity(intent);
-//                    }
-                } else {
-//                    Intent intent = new Intent(this, DisPlayMulActivity.class);
-//                    intent.putExtra(RESULT, obj);
-//                    startActivity(intent);
+                HmsScan scan ;
+                for (Parcelable parcelable : obj) {
+                    scan = (HmsScan) parcelable;
+                    System.out.println(scan.getOriginalValue());
+                    Log.e("TAG", "onActivityResult: "+ scan.getOriginalValue());
                 }
+                Toast.makeText(requireActivity(), obj.length, Toast.LENGTH_SHORT).show();
             }
         }
     }

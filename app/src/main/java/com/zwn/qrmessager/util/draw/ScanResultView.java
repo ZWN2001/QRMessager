@@ -21,6 +21,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -91,7 +92,7 @@ public class ScanResultView extends View {
     public static class HmsScanGraphic {
 
         private static final int TEXT_COLOR = Color.WHITE;
-        private static final float TEXT_SIZE = 35.0f;
+        private static final float TEXT_SIZE = 40.0f;
         private static final float STROKE_WIDTH = 4.0f;
 
         private final Paint rectPaint;
@@ -131,7 +132,8 @@ public class ScanResultView extends View {
             other.bottom = scaleY(rect.right);
             canvas.drawRect(other, rectPaint);
 
-            canvas.drawText(hmsScan.getOriginalValue(), other.right, other.bottom, hmsScanResult);
+            //显示序号
+            canvas.drawText(hmsScan.getOriginalValue().split(":")[0], other.right, other.bottom, hmsScanResult);
         }
 
         public float scaleX(float horizontal) {

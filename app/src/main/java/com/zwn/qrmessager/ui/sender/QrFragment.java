@@ -88,7 +88,7 @@ public class QrFragment extends Fragment {
                         String startInfo = "\\start:" + Files.probeContentType(file.toPath());
                         bitmap = ScanUtil.buildBitmap(startInfo, 0, width, width, options);
                         Bitmap finalResultImage = bitmap;
-                        QrFragment.this.requireActivity().runOnUiThread(() -> image.setImageBitmap(finalResultImage));
+                        requireActivity().runOnUiThread(() -> image.setImageBitmap(finalResultImage));
                         Thread.sleep(1000);//等1s
                     } catch (WriterException | IOException | InterruptedException | IllegalStateException e) {
                         e.printStackTrace();
@@ -99,12 +99,12 @@ public class QrFragment extends Fragment {
                         while (inputStream.read(data, 0, 128) != -1) {
                             i++;
                             Bitmap resultImage = ScanUtil.buildBitmap(i+":" + Arrays.toString(data), 0, width, width, options);
-                            QrFragment.this.requireActivity().runOnUiThread(() -> image.setImageBitmap(resultImage));
-                            Thread.sleep(500);//等1s
+                            requireActivity().runOnUiThread(() -> image.setImageBitmap(resultImage));
+                            Thread.sleep(30);//等
                         }
                         bitmap = ScanUtil.buildBitmap("\\over:" + i, 0, width, width, options);
                         Bitmap finalBitmap = bitmap;
-                        QrFragment.this.requireActivity().runOnUiThread(() -> image.setImageBitmap(finalBitmap));
+                        requireActivity().runOnUiThread(() -> image.setImageBitmap(finalBitmap));
                         inputStream.close();
                         i = 0;
                     } catch (IOException | WriterException | InterruptedException | IllegalStateException e) {

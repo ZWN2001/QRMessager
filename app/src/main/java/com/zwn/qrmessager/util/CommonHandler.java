@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.huawei.hms.ml.scan.HmsScan;
 import com.huawei.hms.ml.scan.HmsScanAnalyzer;
@@ -23,17 +22,18 @@ import com.zwn.qrmessager.ui.CommonActivity;
 import com.zwn.qrmessager.util.draw.ScanResultView;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
 public final class CommonHandler extends Handler {
 
-    private static final String TAG = "MainHandler";
     private static final double DEFAULT_ZOOM = 1.0;
     private final CameraOperation cameraOperation;
     private final HandlerThread decodeThread;
     private final Handler decodeHandle;
     private final Activity activity;
+    private List<String> result;
 
     public CommonHandler(final Activity activity, CameraOperation cameraOperation) {
         this.cameraOperation = cameraOperation;
@@ -81,7 +81,6 @@ public final class CommonHandler extends Handler {
             restart(DEFAULT_ZOOM);
             bitmap.recycle();
         }).addOnFailureListener(e -> {
-            Log.w(TAG, e);
             restart(DEFAULT_ZOOM);
             bitmap.recycle();
         });
@@ -89,7 +88,6 @@ public final class CommonHandler extends Handler {
 
     @Override
     public void handleMessage(Message message) {
-        Log.e(TAG, String.valueOf(message.what));
         removeMessages(1);
         if (message.what == 0) {
             CommonActivity commonActivity1 = (CommonActivity) activity;
@@ -99,7 +97,6 @@ public final class CommonHandler extends Handler {
             activity.setResult(RESULT_OK, intent);
             //Show the scanning result on the screen.
                 CommonActivity commonActivity = (CommonActivity) activity;
-
                 HmsScan[] arr = (HmsScan[]) message.obj;
                 for (int i = 0; i < arr.length; i++) {
                     if (i == 0) {
@@ -129,7 +126,7 @@ public final class CommonHandler extends Handler {
             decodeHandle.getLooper().quit();
             decodeThread.join(500);
         } catch (InterruptedException e) {
-            Log.w(TAG, e);
+//            Log.w(TAG, e);
         }
     }
 

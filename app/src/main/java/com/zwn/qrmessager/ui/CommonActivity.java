@@ -33,7 +33,7 @@ import java.util.Objects;
 
 public class CommonActivity extends AppCompatActivity {
 
-    public static final int REQUEST_CODE_PHOTO = 0X1113;
+//    public static final int REQUEST_CODE_PHOTO = 0X1113;
     private static final String TAG = "CommonActivity";
     private SurfaceHolder surfaceHolder;
     private CameraOperation cameraOperation;
@@ -147,32 +147,33 @@ public class CommonActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK || data == null || requestCode != REQUEST_CODE_PHOTO) {
-            return;
-        }
-        try {
-            decodeMultiAsyn(MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData()));
-        } catch (Exception e) {
-            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-        }
-    }
-
-    private void decodeMultiAsyn(Bitmap bitmap) {
-        MLFrame image = MLFrame.fromBitmap(bitmap);
-        HmsScanAnalyzer analyzer = new HmsScanAnalyzer.Creator(this).setHmsScanTypes(HmsScan.ALL_SCAN_TYPE).create();
-        analyzer.analyzInAsyn(image).addOnSuccessListener(hmsScans -> {
-            if (hmsScans != null && hmsScans.size() > 0 && hmsScans.get(0) != null && !TextUtils.isEmpty(hmsScans.get(0).getOriginalValue())) {
-                HmsScan[] infos = new HmsScan[hmsScans.size()];
-                Intent intent = new Intent();
-                intent.putExtra(SCAN_RESULT, hmsScans.toArray(infos));
-                setResult(RESULT_OK, intent);
-                CommonActivity.this.finish();
-            }
-        }).addOnFailureListener(e -> Log.w(TAG, e));
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode != RESULT_OK || data == null || requestCode != REQUEST_CODE_PHOTO) {
+//            return;
+//        }
+//        try {
+//            System.out.println('1');
+//            decodeMultiAsyn(MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData()));
+//        } catch (Exception e) {
+//            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+//        }
+//    }
+//
+//    private void decodeMultiAsyn(Bitmap bitmap) {
+//        MLFrame image = MLFrame.fromBitmap(bitmap);
+//        HmsScanAnalyzer analyzer = new HmsScanAnalyzer.Creator(this).setHmsScanTypes(HmsScan.ALL_SCAN_TYPE).create();
+//        analyzer.analyzInAsyn(image).addOnSuccessListener(hmsScans -> {
+//            if (hmsScans != null && hmsScans.size() > 0 && hmsScans.get(0) != null && !TextUtils.isEmpty(hmsScans.get(0).getOriginalValue())) {
+//                HmsScan[] infos = new HmsScan[hmsScans.size()];
+//                Intent intent = new Intent();
+//                intent.putExtra(SCAN_RESULT, hmsScans.toArray(infos));
+//                setResult(RESULT_OK, intent);
+//                CommonActivity.this.finish();
+//            }
+//        }).addOnFailureListener(e -> Log.w(TAG, e));
+//    }
 
     class SurfaceCallBack implements SurfaceHolder.Callback {
 
