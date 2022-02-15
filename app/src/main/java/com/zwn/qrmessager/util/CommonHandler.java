@@ -1,26 +1,11 @@
-/*
- * Copyright 2020. Huawei Technologies Co., Ltd. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.zwn.qrmessager.util;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.app.Activity;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
@@ -30,12 +15,16 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.huawei.hms.hmsscankit.ScanUtil;
 import com.huawei.hms.ml.scan.HmsScan;
+import com.huawei.hms.ml.scan.HmsScanAnalyzer;
 import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions;
+import com.huawei.hms.mlsdk.common.MLFrame;
 import com.zwn.qrmessager.ui.CommonActivity;
+import com.zwn.qrmessager.util.draw.ScanResultView;
 
 import java.io.ByteArrayOutputStream;
+
+import static android.app.Activity.RESULT_OK;
 
 public final class CommonHandler extends Handler {
 
@@ -57,33 +46,11 @@ public final class CommonHandler extends Handler {
                 if (msg == null) {
                     return;
                 }
-                    HmsScan[] result = decodeSyn(msg.arg1, msg.arg2, (byte[]) msg.obj, activity);
-                    if (result == null || result.length == 0) {
-                        restart(DEFAULT_ZOOM);
-                    } else if (TextUtils.isEmpty(result[0].getOriginalValue()) && result[0].getZoomValue() != 1.0) {
-                        restart(result[0].getZoomValue());
-                    } else if (!TextUtils.isEmpty(result[0].getOriginalValue())) {
-                        Message message = new Message();
-                        message.what = msg.what;
-                        message.obj = result;
-                        CommonHandler.this.sendMessage(message);
-                        restart(DEFAULT_ZOOM);
-                    } else{
-                         restart(DEFAULT_ZOOM);
-                    }
+                decodeAsyn(msg.arg1, msg.arg2, (byte[]) msg.obj);
             }
         };
         cameraOperation.startPreview();
         restart(DEFAULT_ZOOM);
-    }
-
-    /**
-     * Call the MultiProcessor API in synchronous mode.
-     */
-    private HmsScan[] decodeSyn(int width, int height, byte[] data, final Activity activity) {
-        Bitmap bitmap = convertToBitmap(width, height, data);
-            HmsScanAnalyzerOptions options = new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.ALL_SCAN_TYPE).setPhotoMode(false).create();
-            return ScanUtil.decodeWithBitmap(activity, bitmap, options);
     }
 
     /**
@@ -96,6 +63,30 @@ public final class CommonHandler extends Handler {
         return BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.toByteArray().length);
     }
 
+    /**
+     * Call the MultiProcessor API in asynchronous mode.
+     */
+    private void decodeAsyn(int width, int height, byte[] data) {
+        final Bitmap bitmap = convertToBitmap(width, height, data);
+        MLFrame image = MLFrame.fromBitmap(bitmap);
+        HmsScanAnalyzerOptions options = new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(com.huawei.hms.ml.scan.HmsScanBase.ALL_SCAN_TYPE).create();
+        HmsScanAnalyzer analyzer = new HmsScanAnalyzer(options);
+        analyzer.analyzInAsyn(image).addOnSuccessListener(hmsScans -> {
+            if (hmsScans != null && hmsScans.size() > 0 && hmsScans.get(0) != null && !TextUtils.isEmpty(hmsScans.get(0).getOriginalValue())) {
+                HmsScan[] infos = new HmsScan[hmsScans.size()];
+                Message message = new Message();
+                message.obj = hmsScans.toArray(infos);
+                CommonHandler.this.sendMessage(message);
+            }
+            restart(DEFAULT_ZOOM);
+            bitmap.recycle();
+        }).addOnFailureListener(e -> {
+            Log.w(TAG, e);
+            restart(DEFAULT_ZOOM);
+            bitmap.recycle();
+        });
+    }
+
     @Override
     public void handleMessage(Message message) {
         Log.e(TAG, String.valueOf(message.what));
@@ -106,7 +97,26 @@ public final class CommonHandler extends Handler {
             Intent intent = new Intent();
             intent.putExtra(CommonActivity.SCAN_RESULT, (HmsScan[]) message.obj);
             activity.setResult(RESULT_OK, intent);
-            activity.finish();
+            //Show the scanning result on the screen.
+                CommonActivity commonActivity = (CommonActivity) activity;
+
+                HmsScan[] arr = (HmsScan[]) message.obj;
+                for (int i = 0; i < arr.length; i++) {
+                    if (i == 0) {
+                        commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i], Color.YELLOW));
+                    } else if (i == 1) {
+                        commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i], Color.BLUE));
+                    } else if (i == 2){
+                        commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i], Color.RED));
+                    } else if (i == 3){
+                        commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i], Color.GREEN));
+                    } else {
+                        commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i]));
+                    }
+                }
+                commonActivity.scanResultView.setCameraInfo(1080, 1920);
+                commonActivity.scanResultView.invalidate();
+                sendEmptyMessageDelayed(1,500);
         }else if(message.what == 1){
             CommonActivity commonActivity1 = (CommonActivity) activity;
             commonActivity1.scanResultView.clear();

@@ -5,6 +5,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.huawei.hms.hmsscankit.ScanUtil;
+import com.huawei.hms.ml.scan.HmsScan;
 import com.huawei.uikit.hwbutton.widget.HwButton;
 import com.zwn.qrmessager.databinding.FragmentReceiverBinding;
 import com.zwn.qrmessager.ui.CommonActivity;
@@ -48,12 +53,21 @@ public class ReceiverFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         requireActivity();
         if (resultCode != Activity.RESULT_OK || data == null) { return; }
-        //Default View
         if (requestCode == REQUEST_CODE_SCAN_MULTI) {
-//            HmsScan obj = data.getParcelableExtra(ScanUtil.RESULT);
-//            if (obj != null) {
-//                String result = obj.getOriginalValue();
-//            }
+            Parcelable[] obj = data.getParcelableArrayExtra(CommonActivity.SCAN_RESULT);
+            if (obj != null && obj.length > 0) {
+                if (obj.length == 1) {
+//                    if (obj[0] != null && !TextUtils.isEmpty(((HmsScan) obj[0]).getOriginalValue())) {
+//                        Intent intent = new Intent(this, DisPlayActivity.class);
+//                        intent.putExtra(RESULT, obj[0]);
+//                        startActivity(intent);
+//                    }
+                } else {
+//                    Intent intent = new Intent(this, DisPlayMulActivity.class);
+//                    intent.putExtra(RESULT, obj);
+//                    startActivity(intent);
+                }
+            }
         }
     }
 

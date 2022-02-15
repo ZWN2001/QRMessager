@@ -22,9 +22,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 public class MainActivity extends AppCompatActivity {
+    public static final int BITMAP_CODE = 333;
+    public static final int MULTIPROCESSOR_SYN_CODE = 444;
+    public static final int MULTIPROCESSOR_ASYN_CODE = 555;
+    public static final String DECODE_MODE = "decode_mode";
 
     private AppBarConfiguration mAppBarConfiguration;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

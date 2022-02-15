@@ -34,7 +34,7 @@ import java.util.Arrays;
 public class QrFragment extends Fragment {
     FragmentQrBinding binding;
     private final String filePath;
-    byte[] data = new byte[512];
+    byte[] data = new byte[128];
     ImageView image;
     Thread qrThread;
 
@@ -64,8 +64,7 @@ public class QrFragment extends Fragment {
         if(qrThread != null && qrThread.isAlive()){
             qrThread.interrupt();
         }
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.app_bar_main, new SenderFragment()).commit();
+        requireActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -97,16 +96,17 @@ public class QrFragment extends Fragment {
 
                     try {
                         inputStream = new FileInputStream(file);
-                        while (inputStream.read(data, 0, 512) != -1) {
+                        while (inputStream.read(data, 0, 128) != -1) {
                             i++;
-                            Bitmap resultImage = ScanUtil.buildBitmap("i:" + Arrays.toString(data), 0, width, width, options);
+                            Bitmap resultImage = ScanUtil.buildBitmap(i+":" + Arrays.toString(data), 0, width, width, options);
                             QrFragment.this.requireActivity().runOnUiThread(() -> image.setImageBitmap(resultImage));
-                            Thread.sleep(1000);//等1s
+                            Thread.sleep(500);//等1s
                         }
                         bitmap = ScanUtil.buildBitmap("\\over:" + i, 0, width, width, options);
                         Bitmap finalBitmap = bitmap;
                         QrFragment.this.requireActivity().runOnUiThread(() -> image.setImageBitmap(finalBitmap));
                         inputStream.close();
+                        i = 0;
                     } catch (IOException | WriterException | InterruptedException | IllegalStateException e) {
                         e.printStackTrace();
                     }

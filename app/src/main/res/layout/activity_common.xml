@@ -59,28 +59,6 @@
             android:background="#FF000000"
             android:alpha="0.1" />
 
-        <TextView
-            android:id="@+id/scan_tip"
-            android:layout_above="@id/scan_ars"
-            android:layout_marginBottom="10dp"
-            android:layout_centerHorizontal="true"
-            android:text="@string/text_scan_tip"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_height="20dp"
-            android:layout_width="220dp"
-            android:gravity="center"/>
-
-        <ImageView
-            android:id="@+id/scan_ars"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_centerInParent="true"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/cloors" />
-
         <com.zwn.qrmessager.util.draw.ScanResultView
             android:id="@+id/scan_result_view"
             android:layout_width="match_parent"
