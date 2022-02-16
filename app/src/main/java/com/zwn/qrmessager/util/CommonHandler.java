@@ -121,7 +121,6 @@ public final class CommonHandler extends Handler {
                         numAll = Integer.parseInt(array[1]);
                         lastNum = Integer.parseInt(array[2]);
                     } else {
-                        Log.e("TAG", "handleMessage: " + array[0] + ":" + received.size());
                         String[] finalArray = array;
                         received.computeIfAbsent(array[0], k -> finalArray[1]);
                     }
@@ -168,26 +167,39 @@ public final class CommonHandler extends Handler {
             activity.setResult(RESULT_OK, intent);
         }else {
             String pathName = filepath + fileName;
-            createFileAndWrite(pathName,all);
+            int j = createFileAndWrite(pathName,all);
             Intent intent = new Intent();
-            intent.putExtra(CommonActivity.SCAN_RESULT, filepath + fileName);
+            if(j == 0){
+                intent.putExtra(CommonActivity.SCAN_RESULT, filepath + fileName);
+            }else {
+                intent.putExtra(CommonActivity.SCAN_RESULT, 0);
+            }
             activity.setResult(RESULT_OK, intent);
         }
         activity.finish();
     }
-    private void createFileAndWrite(String filePath,byte[] res){
+    private int createFileAndWrite(String filePath,byte[] res){
         //传入路径 + 文件名
         File mFile = new File(filePath);
         if (mFile.exists()){
-            mFile.delete();
+            boolean  b = mFile.delete();
+            if(!b){
+                return -1;
+            }
         }
         try {
-            mFile.createNewFile();
-            FileOutputStream outStream = new FileOutputStream(mFile);
-            outStream.write(res);
-            outStream.close();
+           boolean b =  mFile.createNewFile();
+           if(b){
+               FileOutputStream outStream = new FileOutputStream(mFile);
+               outStream.write(res);
+               outStream.close();
+               Log.e("TAG", "createFileAndWrite: "+mFile.length() );
+               return 0;
+           }
+         return -1;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return -1;
     }
 }
