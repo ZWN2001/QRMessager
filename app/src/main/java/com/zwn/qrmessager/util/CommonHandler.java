@@ -13,10 +13,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.huawei.hms.ml.scan.HmsScan;
 import com.huawei.hms.ml.scan.HmsScanAnalyzer;
@@ -28,9 +26,11 @@ import com.zwn.qrmessager.util.draw.ScanResultView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
@@ -44,7 +44,7 @@ public final class CommonHandler extends Handler {
     private final HandlerThread decodeThread;
     private final Handler decodeHandle;
     private final Activity activity;
-    private final Map<String, String> received = new HashMap<>();
+    private final HashMap<String, String> received = new HashMap<>();
     private int numAll = 0;//总个数
     private int lastNum = 0;//不满的数组的长度
     private String fileName = "";//不满的数组的长度
@@ -107,45 +107,27 @@ public final class CommonHandler extends Handler {
         if (message.what == 0) {
             CommonActivity commonActivity1 = (CommonActivity) activity;
             commonActivity1.scanResultView.clear();
-//            Intent intent = new Intent();
-//            intent.putExtra(CommonActivity.SCAN_RESULT, (HmsScan[]) message.obj);
-//            activity.setResult(RESULT_OK, intent);
-            //Show the scanning result on the screen.
                 CommonActivity commonActivity = (CommonActivity) activity;
                 HmsScan[] arr = (HmsScan[]) message.obj;
                 String[] array;
-                for (int i = 0; i < arr.length; i++) {
-                     array = arr[i].getOriginalValue().split(":");
-                    if(array[0].equals("\\start")){
-                        received.put("filename",array[1]);
+            for (HmsScan hmsScan : arr) {
+                array = hmsScan.getOriginalValue().split(":");
+                if (!fileName.equals("") && numAll != 0 && received.size() == numAll) {
+                    transToFileAndFinish();
+                } else {
+                    if (array[0].equals("start")) {
                         fileName = array[1];
-                        Log.e("TAG", "type: "+array[1] );
-                    }else if (array[0].equals("\\over")){
+                    } else if (array[0].equals("over")) {
                         numAll = Integer.parseInt(array[1]);
                         lastNum = Integer.parseInt(array[2]);
-                        received.put("lengthAll",array[1]);
-                        received.put("last",array[2]);
-                        Log.e("TAG", "lengthAll: "+array[1] );
-                    }else {
-                        if(received.get(array[0]) != null){ received.put(array[0],array[1]);
-                        Log.e("TAG", "handleMessage: "+array[1] );}
-                    }
-                    if(received.get("filename") != null && numAll != 0 && (!received.isEmpty()) &&
-                            received.size() == (numAll + 2)){
-                        transToFileAndFinish();
-                    }
-                    if (i == 0) {
-                        commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i], Color.YELLOW));
-                    } else if (i == 1) {
-                        commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i], Color.BLUE));
-                    } else if (i == 2){
-                        commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i], Color.RED));
-                    } else if (i == 3){
-                        commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i], Color.GREEN));
                     } else {
-                        commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i]));
+                        Log.e("TAG", "handleMessage: " + array[0] + ":" + received.size());
+                        String[] finalArray = array;
+                        received.computeIfAbsent(array[0], k -> finalArray[1]);
                     }
                 }
+                  commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[0], Color.YELLOW));
+            }
                 commonActivity.scanResultView.setCameraInfo(1080, 1920);
                 commonActivity.scanResultView.invalidate();
                 sendEmptyMessageDelayed(1,500);
@@ -160,9 +142,7 @@ public final class CommonHandler extends Handler {
             cameraOperation.stopPreview();
             decodeHandle.getLooper().quit();
             decodeThread.join(500);
-        } catch (InterruptedException e) {
-//            Log.w(TAG, e);
-        }
+        } catch (InterruptedException e) { e.printStackTrace();}
     }
 
     public void restart(double zoomValue) {
@@ -186,18 +166,16 @@ public final class CommonHandler extends Handler {
             Intent intent = new Intent();
             intent.putExtra(CommonActivity.SCAN_RESULT, 0);
             activity.setResult(RESULT_OK, intent);
-            activity.finish();
         }else {
             String pathName = filepath + fileName;
-            createFile(pathName);
+            createFileAndWrite(pathName,all);
             Intent intent = new Intent();
             intent.putExtra(CommonActivity.SCAN_RESULT, filepath + fileName);
             activity.setResult(RESULT_OK, intent);
-            activity.finish();
         }
-
+        activity.finish();
     }
-    private void createFile(String filePath){
+    private void createFileAndWrite(String filePath,byte[] res){
         //传入路径 + 文件名
         File mFile = new File(filePath);
         if (mFile.exists()){
@@ -205,6 +183,9 @@ public final class CommonHandler extends Handler {
         }
         try {
             mFile.createNewFile();
+            FileOutputStream outStream = new FileOutputStream(mFile);
+            outStream.write(res);
+            outStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

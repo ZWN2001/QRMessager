@@ -87,7 +87,7 @@ public class QrFragment extends Fragment {
                 int i = 0;
                 while (!Thread.currentThread().isInterrupted()) {
                             try {
-                                String startInfo = "\\start:" + file.getName();
+                                String startInfo = "start:" + file.getName();
                                 bitmap = ScanUtil.buildBitmap(startInfo, 0, width, width, options);
                                 Bitmap finalResultImage = bitmap;
                                 requireActivity().runOnUiThread(() -> image.setImageBitmap(finalResultImage));
@@ -102,18 +102,15 @@ public class QrFragment extends Fragment {
                                 int lastLength = 0;//最后一个可能不满128
                                 int readLength = inputStream.read(data, 0, 128);
                                 while (readLength != -1) {
-                                    if(readLength<128){
-                                        lastLength = readLength;
-                                        Log.e("TAG", "generateQRCode: " + lastLength);
-                                    }
+                                    if(readLength<128){ lastLength = readLength; }
                                     encodedByte = Base64.getEncoder().encodeToString(data);
                                     Bitmap resultImage = ScanUtil.buildBitmap(i + ":" + encodedByte, 0, width, width, options);
                                     i++;
                                     requireActivity().runOnUiThread(() -> image.setImageBitmap(resultImage));
-                                    Thread.sleep(40);//等
+                                    Thread.sleep(120);//等
                                     readLength = inputStream.read(data, 0, 128);
                                 }
-                                bitmap = ScanUtil.buildBitmap("\\over:" + i +":" + lastLength, 0, width, width, options);
+                                bitmap = ScanUtil.buildBitmap("over:" + i +":" + lastLength, 0, width, width, options);
                                 Bitmap finalBitmap = bitmap;
                                 requireActivity().runOnUiThread(() -> image.setImageBitmap(finalBitmap));
                                 Thread.sleep(500);//等

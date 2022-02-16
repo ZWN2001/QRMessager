@@ -64,14 +64,12 @@ public class ReceiverFragment extends Fragment {
         requireActivity();
         if (resultCode != Activity.RESULT_OK || data == null) { return; }
         if (requestCode == REQUEST_CODE_SCAN_MULTI) {
-            Parcelable[] obj = data.getParcelableArrayExtra(CommonActivity.SCAN_RESULT);
-            if (obj != null && obj.length > 0) {
-                System.out.println(Arrays.toString(obj));
-                String result = obj[0].toString();
-                if (result.equals("0")){
+            String obj = data.getStringExtra(CommonActivity.SCAN_RESULT);
+            if (obj != null && obj.length() > 0) {
+                if (obj.equals("0")){
                     Toast.makeText(requireActivity(), "文件保存失败", Toast.LENGTH_SHORT).show();
                 }else {
-                    receiverInfoText.setText(result);
+                    receiverInfoText.setText(obj);
                     Toast.makeText(requireActivity(), "文件保存成功", Toast.LENGTH_SHORT).show();
                 }
 //                HmsScan scan ;

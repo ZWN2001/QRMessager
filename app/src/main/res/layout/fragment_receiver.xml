@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
         android:layout_marginBottom="256dp"
-        android:text="@string/text_receiver_file_info"
         android:layout_gravity="center"/>
 
     <com.huawei.uikit.hwbutton.widget.HwButton
