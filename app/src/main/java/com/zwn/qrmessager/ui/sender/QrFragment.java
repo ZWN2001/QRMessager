@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Base64;
 
 public class QrFragment extends Fragment {
     FragmentQrBinding binding;
@@ -83,34 +85,45 @@ public class QrFragment extends Fragment {
                 Bitmap bitmap;
                 //序列码
                 int i = 0;
-                while (true) {
-                    try {
-                        String startInfo = "\\start:" + Files.probeContentType(file.toPath());
-                        bitmap = ScanUtil.buildBitmap(startInfo, 0, width, width, options);
-                        Bitmap finalResultImage = bitmap;
-                        requireActivity().runOnUiThread(() -> image.setImageBitmap(finalResultImage));
-                        Thread.sleep(1000);//等1s
-                    } catch (WriterException | IOException | InterruptedException | IllegalStateException e) {
-                        e.printStackTrace();
-                    }
+                while (!Thread.currentThread().isInterrupted()) {
+                            try {
+                                String startInfo = "\\start:" + file.getName();
+                                bitmap = ScanUtil.buildBitmap(startInfo, 0, width, width, options);
+                                Bitmap finalResultImage = bitmap;
+                                requireActivity().runOnUiThread(() -> image.setImageBitmap(finalResultImage));
+                                Thread.sleep(500);//等
+                            } catch (WriterException | InterruptedException | IllegalStateException e) {
+                                e.printStackTrace();
+                            }
 
-                    try {
-                        inputStream = new FileInputStream(file);
-                        while (inputStream.read(data, 0, 128) != -1) {
-                            i++;
-                            Bitmap resultImage = ScanUtil.buildBitmap(i+":" + Arrays.toString(data), 0, width, width, options);
-                            requireActivity().runOnUiThread(() -> image.setImageBitmap(resultImage));
-                            Thread.sleep(30);//等
-                        }
-                        bitmap = ScanUtil.buildBitmap("\\over:" + i, 0, width, width, options);
-                        Bitmap finalBitmap = bitmap;
-                        requireActivity().runOnUiThread(() -> image.setImageBitmap(finalBitmap));
-                        inputStream.close();
-                        i = 0;
-                    } catch (IOException | WriterException | InterruptedException | IllegalStateException e) {
-                        e.printStackTrace();
+                            try {
+                                inputStream = new FileInputStream(file);
+                                String encodedByte;
+                                int lastLength = 0;//最后一个可能不满128
+                                int readLength = inputStream.read(data, 0, 128);
+                                while (readLength != -1) {
+                                    if(readLength<128){
+                                        lastLength = readLength;
+                                        Log.e("TAG", "generateQRCode: " + lastLength);
+                                    }
+                                    encodedByte = Base64.getEncoder().encodeToString(data);
+                                    Bitmap resultImage = ScanUtil.buildBitmap(i + ":" + encodedByte, 0, width, width, options);
+                                    i++;
+                                    requireActivity().runOnUiThread(() -> image.setImageBitmap(resultImage));
+                                    Thread.sleep(40);//等
+                                    readLength = inputStream.read(data, 0, 128);
+                                }
+                                bitmap = ScanUtil.buildBitmap("\\over:" + i +":" + lastLength, 0, width, width, options);
+                                Bitmap finalBitmap = bitmap;
+                                requireActivity().runOnUiThread(() -> image.setImageBitmap(finalBitmap));
+                                Thread.sleep(500);//等
+                                inputStream.close();
+                                i = 0;
+                            } catch (IOException | WriterException | InterruptedException | IllegalStateException e) {
+                                e.printStackTrace();
+                            }
+
                     }
-                }
             });
             qrThread.start();
         }

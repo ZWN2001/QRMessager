@@ -9,22 +9,33 @@ import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.huawei.hms.ml.scan.HmsScan;
 import com.huawei.hms.ml.scan.HmsScanAnalyzer;
 import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions;
 import com.huawei.hms.mlsdk.common.MLFrame;
+import com.zwn.qrmessager.constant.Constant;
 import com.zwn.qrmessager.ui.CommonActivity;
 import com.zwn.qrmessager.util.draw.ScanResultView;
 
 import java.io.ByteArrayOutputStream;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
+
+import androidx.annotation.RequiresApi;
 
 public final class CommonHandler extends Handler {
 
@@ -33,7 +44,10 @@ public final class CommonHandler extends Handler {
     private final HandlerThread decodeThread;
     private final Handler decodeHandle;
     private final Activity activity;
-    private List<String> result;
+    private final Map<String, String> received = new HashMap<>();
+    private int numAll = 0;//总个数
+    private int lastNum = 0;//不满的数组的长度
+    private String fileName = "";//不满的数组的长度
 
     public CommonHandler(final Activity activity, CameraOperation cameraOperation) {
         this.cameraOperation = cameraOperation;
@@ -86,19 +100,40 @@ public final class CommonHandler extends Handler {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void handleMessage(Message message) {
         removeMessages(1);
         if (message.what == 0) {
             CommonActivity commonActivity1 = (CommonActivity) activity;
             commonActivity1.scanResultView.clear();
-            Intent intent = new Intent();
-            intent.putExtra(CommonActivity.SCAN_RESULT, (HmsScan[]) message.obj);
-            activity.setResult(RESULT_OK, intent);
+//            Intent intent = new Intent();
+//            intent.putExtra(CommonActivity.SCAN_RESULT, (HmsScan[]) message.obj);
+//            activity.setResult(RESULT_OK, intent);
             //Show the scanning result on the screen.
                 CommonActivity commonActivity = (CommonActivity) activity;
                 HmsScan[] arr = (HmsScan[]) message.obj;
+                String[] array;
                 for (int i = 0; i < arr.length; i++) {
+                     array = arr[i].getOriginalValue().split(":");
+                    if(array[0].equals("\\start")){
+                        received.put("filename",array[1]);
+                        fileName = array[1];
+                        Log.e("TAG", "type: "+array[1] );
+                    }else if (array[0].equals("\\over")){
+                        numAll = Integer.parseInt(array[1]);
+                        lastNum = Integer.parseInt(array[2]);
+                        received.put("lengthAll",array[1]);
+                        received.put("last",array[2]);
+                        Log.e("TAG", "lengthAll: "+array[1] );
+                    }else {
+                        if(received.get(array[0]) != null){ received.put(array[0],array[1]);
+                        Log.e("TAG", "handleMessage: "+array[1] );}
+                    }
+                    if(received.get("filename") != null && numAll != 0 && (!received.isEmpty()) &&
+                            received.size() == (numAll + 2)){
+                        transToFileAndFinish();
+                    }
                     if (i == 0) {
                         commonActivity.scanResultView.add(new ScanResultView.HmsScanGraphic(commonActivity.scanResultView, arr[i], Color.YELLOW));
                     } else if (i == 1) {
@@ -132,5 +167,46 @@ public final class CommonHandler extends Handler {
 
     public void restart(double zoomValue) {
         cameraOperation.callbackFrame(decodeHandle, zoomValue);
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void transToFileAndFinish(){
+        int i;
+        byte[] all = new byte[128* (numAll - 1) + lastNum];
+        for (i = 0; i < numAll - 1; i++){
+            byte[] decoded = Base64.getDecoder().decode(received.get(i+""));
+            System.arraycopy(decoded, 0, all, 0, 128);
+        }
+        byte[] decoded = Base64.getDecoder().decode(received.get(numAll - 1 + ""));
+        System.arraycopy(decoded, 0, all, 0, 128);
+
+        String filepath = Constant.getSettings().getFilepath();
+        if(filepath.isEmpty()){
+            Intent intent = new Intent();
+            intent.putExtra(CommonActivity.SCAN_RESULT, 0);
+            activity.setResult(RESULT_OK, intent);
+            activity.finish();
+        }else {
+            String pathName = filepath + fileName;
+            createFile(pathName);
+            Intent intent = new Intent();
+            intent.putExtra(CommonActivity.SCAN_RESULT, filepath + fileName);
+            activity.setResult(RESULT_OK, intent);
+            activity.finish();
+        }
+
+    }
+    private void createFile(String filePath){
+        //传入路径 + 文件名
+        File mFile = new File(filePath);
+        if (mFile.exists()){
+            mFile.delete();
+        }
+        try {
+            mFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -22,10 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 public class MainActivity extends AppCompatActivity {
-    public static final int BITMAP_CODE = 333;
-    public static final int MULTIPROCESSOR_SYN_CODE = 444;
-    public static final int MULTIPROCESSOR_ASYN_CODE = 555;
-    public static final String DECODE_MODE = "decode_mode";
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -33,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initScreenWidth();
+        initfilepath();
         getWindow().setStatusBarColor(Color.TRANSPARENT);//将状态栏设置成透明色
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//将导航栏设置为透明色
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -69,5 +66,10 @@ public class MainActivity extends AppCompatActivity {
              width =  displayMetrics.widthPixels;
         }
         Constant.getSettings().setScreenWidth(width);
+    }
+
+    void initfilepath(){
+        String filePath = MainActivity.this.getFilesDir().getAbsolutePath();
+        Constant.getSettings().setFilepath(filePath);
     }
 }

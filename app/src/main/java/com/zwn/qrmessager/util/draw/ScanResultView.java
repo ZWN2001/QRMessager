@@ -21,7 +21,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -79,8 +78,8 @@ public class ScanResultView extends View {
 
         synchronized (lock) {
             if ((previewWidth != 0) && (previewHeight != 0)) {
-                widthScaleFactor = (float) canvas.getWidth() / (float) previewWidth;
-                heightScaleFactor = (float) canvas.getHeight() / (float) previewHeight;
+                widthScaleFactor = (float) getWidth() / previewWidth;
+                heightScaleFactor = (float) getHeight() / previewHeight;
             }
 
             for (HmsScanGraphic graphic : hmsScanGraphics) {
@@ -98,7 +97,7 @@ public class ScanResultView extends View {
         private final Paint rectPaint;
         private final Paint hmsScanResult;
         private final HmsScan hmsScan;
-        private ScanResultView scanResultView;
+        private final ScanResultView scanResultView;
 
         public HmsScanGraphic(ScanResultView scanResultView, HmsScan hmsScan) {
             this(scanResultView, hmsScan, Color.WHITE);
